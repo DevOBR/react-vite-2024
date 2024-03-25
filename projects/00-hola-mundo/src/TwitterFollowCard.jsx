@@ -1,7 +1,16 @@
+import { useState } from 'react'
+
 //sindresorhus
 // Props should be inmutable you can assign the prop to a constant
 // the prop childre is a special prop that chan be used to inject an element or text in my component
-export function TwitterFollowCard({children, userName = 'unknow', name, isFollowing}) {
+//export function TwitterFollowCard({children, userName = 'unknow', initialIsFollowing}) {
+export function TwitterFollowCard({children, userName = 'unknow'}) {
+    // initiate valuses in a components only happens 1 time and if the parent component change the 
+    // state, the value is not propagated to the child.
+    const [isFollowing, setIsFollowing] = useState(false);
+    const handleClick = () => {
+        setIsFollowing(!isFollowing);
+    };
     console.log(isFollowing)
     const text = isFollowing ? 'Following' : 'Follow';
     const buttonClassName = isFollowing 
@@ -17,8 +26,9 @@ export function TwitterFollowCard({children, userName = 'unknow', name, isFollow
                 </div>
             </header>
             <aside>
-                <button className={buttonClassName}>
-                    {text}
+                <button className={buttonClassName} onClick={handleClick}>
+                    <span className="tw-followCard-text">{text}</span>
+                    <span className="tw-followCard-stopFollow">Stop following</span>
                 </button> 
             </aside>
         </article>
