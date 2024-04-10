@@ -29,6 +29,8 @@ const users = [
     }
 ];
 
+// * When you create a component, the definition needs to be set in pascal case.this because react needs to be detect if the element 
+// is a component or html.
 export function App() {
     // When you update the state of the parent component, the parent component propagates 
     // the change downstream to the child component
