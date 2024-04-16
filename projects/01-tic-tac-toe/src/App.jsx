@@ -1,55 +1,22 @@
 import { useState } from 'react';
-import './App.css'
-
-const TURNS = {
-  x: 'x',
-  o: 'o'
-};
-
-
-
-const Square = ({ children, isSelected, updateBoard, index }) => {
-  const className = `square ${isSelected ? 'is-selected' : ''}`;
-  const handleClick = () => {
-    updateBoard(index);
-  }
-  return (
-    <div onClick={handleClick} className={className}>
-      {children}
-    </div>
-  )
-}
-
-const WINNER_PATTERNS = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6],
-];
-
+import './App.css';
+import confetti from 'canvas-confetti';
+import { Square } from './components/Square';
+import { TURNS } from './constants';
+import { checkWinner, checkEndGame } from './logc/board';
+import { WinnerModal } from './components/WinnerModal';
+import { MyBoard } from './components/Board';
+import { MyHeader } from './components/MyHeader';
 
 function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [turn, setTurn] = useState(TURNS.x);
   const [winner, setWinner] = useState(null);
-
-  const checkWinner = (boardToCheck) => {
-    for(const pattern of WINNER_PATTERNS) {
-      const [a,b,c] = pattern;
-      if (
-        boardToCheck[a] &&
-        boardToCheck[a] === boardToCheck[b] &&
-        boardToCheck[a] === boardToCheck[c]
-      ) {
-        return boardToCheck[a];
-      }
-    }
-
-    return null;
+  
+  const resetGame = () => {
+    setBoard(Array(9).fill(null));
+    setTurn(TURNS.x);
+    setWinner(null);
   }
 
   const updateBoard = (index) => {
@@ -66,29 +33,26 @@ function App() {
     const newWinner = checkWinner(newBoard);
     
     if (newWinner) {
+      confetti();
       setWinner(newWinner);
-      
+    }
+    else if (checkEndGame(newBoard)) {
+      setWinner(false);
     }
   }
 
   return (
     <main className='board'>
-      <h1>tic tac toe</h1>
+      <MyHeader resetGame={resetGame} />
       <section className='game'>
-        {
-          board.map((_, index) => {
-            return (
-              <Square
-                key={index}
-                index={index}
-                updateBoard={updateBoard}>{board[index]}</Square>
-            )
-          })
-        }
+        <MyBoard board={board} updateBoard={updateBoard} />
       </section>
       <section className='turn'>
         <Square isSelected={turn === TURNS.x}>{TURNS.x}</Square>
         <Square isSelected={turn === TURNS.o}>{TURNS.o}</Square>
+      </section>
+      <section>
+        <WinnerModal resetGame={resetGame} winner={winner} />
       </section>
     </main>
   );
