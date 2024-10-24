@@ -9,6 +9,7 @@ import { MyBoard } from './components/Board';
 import { MyHeader } from './components/MyHeader';
 import { saveGameToStorage, restGameStorage } from './logc/storage';
 
+// App function
 function App() {
   const [board, setBoard] = useState(() => {  
     const boardFromLocalStorage = window.localStorage.getItem('board');
