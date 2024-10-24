@@ -7,6 +7,7 @@ import { checkWinner, checkEndGame } from './logc/board';
 import { WinnerModal } from './components/WinnerModal';
 import { MyBoard } from './components/Board';
 import { MyHeader } from './components/MyHeader';
+import { saveGameToStorage, restGameStorage } from './logc/storage';
 
 function App() {
   const [board, setBoard] = useState(() => {  
@@ -26,8 +27,7 @@ function App() {
     setTurn(TURNS.x);
     setWinner(null);
 
-    window.localStorage.removeItem('board');
-    window.localStorage.removeItem('turn');
+    restGameStorage();
   }
 
   const updateBoard = (index) => {
@@ -43,8 +43,8 @@ function App() {
 
     const newWinner = checkWinner(newBoard);
 
-    window.localStorage.setItem('board', JSON.stringify(newBoard));
-    window.localStorage.setItem('turn', newTurn);
+    saveGameToStorage({board: newBoard, turn: newTurn});
+
     if (newWinner) {
       confetti();
       setWinner(newWinner);
