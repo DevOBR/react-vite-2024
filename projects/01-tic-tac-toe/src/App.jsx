@@ -9,14 +9,25 @@ import { MyBoard } from './components/Board';
 import { MyHeader } from './components/MyHeader';
 
 function App() {
-  const [board, setBoard] = useState(Array(9).fill(null));
-  const [turn, setTurn] = useState(TURNS.x);
+  const [board, setBoard] = useState(() => {  
+    const boardFromLocalStorage = window.localStorage.getItem('board');
+    return boardFromLocalStorage ? JSON.parse(boardFromLocalStorage) : Array(9).fill(null);
+  });
+
+  const [turn, setTurn] = useState(() => {
+    const turnFromStorage = window.localStorage.getItem('turn');
+    return turnFromStorage ?? TURNS.x;
+  });
+  
   const [winner, setWinner] = useState(null);
   
   const resetGame = () => {
     setBoard(Array(9).fill(null));
     setTurn(TURNS.x);
     setWinner(null);
+
+    window.localStorage.removeItem('board');
+    window.localStorage.removeItem('turn');
   }
 
   const updateBoard = (index) => {
@@ -31,7 +42,9 @@ function App() {
     setTurn(newTurn);
 
     const newWinner = checkWinner(newBoard);
-    
+
+    window.localStorage.setItem('board', JSON.stringify(newBoard));
+    window.localStorage.setItem('turn', newTurn);
     if (newWinner) {
       confetti();
       setWinner(newWinner);
