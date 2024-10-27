@@ -1,0 +1,8 @@
+{
+  "extends": ["./node_modules/standard/eslintrc.json"],
+  "plugins": ["@stylistic/js"],
+  "rules": {
+    "space-before-function-paren": "off",
+    "@stylistic/js/space-before-function-paren": ["error", "never"]
+  }
+}
