@@ -3,6 +3,7 @@ import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import stylistcJs from '@stylistic/eslint-plugin-js'
 
 export default [
   { ignores: ['dist'] },
@@ -14,14 +15,15 @@ export default [
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
+        sourceType: 'module'
+      }
     },
     settings: { react: { version: '18.3' } },
     plugins: {
       react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      '@stylistic/js': stylistcJs
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -31,8 +33,10 @@ export default [
       'react/jsx-no-target-blank': 'off',
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        { allowConstantExport: true }
       ],
-    },
-  },
+      '@stylistic/js/semi': ['error', 'never'],
+      '@stylistic/js/space-before-function-paren': ['error', 'never']
+    }
+  }
 ]
