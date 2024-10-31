@@ -400,4 +400,4 @@ FodyWeavers.xsd
 
 **/package-lock.json
 
-**/my-documentation.md
+my-documentation/**
