@@ -8,9 +8,9 @@ const URL_CAT_IMG_PREFIX =
 export function App() {
   const [text, setText] = useState()
   const [url, setUrl] = useState()
+
   useEffect(() => {
     async function getFirstWordAsync() {
-      setUrl(undefined)
       const { fact } = await (await fetch(URL_FACT_PREFIX)).json()
       setText(fact)
     }
@@ -20,7 +20,10 @@ export function App() {
 
   useEffect(() => {
     if (!text) return
-    setUrl(URL_CAT_IMG_PREFIX.replace('{firstWord}', text.split(' ')[0]))
+
+    setUrl(
+      URL_CAT_IMG_PREFIX.replace('{firstWord}', text.split(' ', 3).join(' '))
+    )
   }, [text])
 
   return (
@@ -30,6 +33,9 @@ export function App() {
         <p>{text}</p>
       </section>
       <section>{url && <img src={url} alt="Cat's images from api" />}</section>
+      <section>
+        <pre>{url}</pre>
+      </section>
     </main>
   )
 }
