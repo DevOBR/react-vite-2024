@@ -5,7 +5,7 @@ body {
 main {
   color: white;
   display: flex;
-  flex-direction: space-between;
+  flex-direction: column;
   gap: 10px;
   place-items: center;
   & section {
