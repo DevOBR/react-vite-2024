@@ -1,40 +1,28 @@
-import { useEffect, useState } from 'react'
 import './App.scss'
-
-const URL_FACT_PREFIX = 'https://catfact.ninja/fact'
-const URL_CAT_IMG_PREFIX =
-  'https://cataas.com/cat/gif/says/{firstWord}?fontColor=white'
+import { useFactRefresh } from './hooks/useFactRefresh'
+import { useCatImg } from './hooks/useCatImg'
 
 export function App() {
-  const [text, setText] = useState()
-  const [url, setUrl] = useState()
+  const { fact, refreshUrlAsync } = useFactRefresh()
+  const { imgUrl } = useCatImg({ fact })
 
-  useEffect(() => {
-    async function getFirstWordAsync() {
-      const { fact } = await (await fetch(URL_FACT_PREFIX)).json()
-      setText(fact)
-    }
-
-    getFirstWordAsync()
-  }, [])
-
-  useEffect(() => {
-    if (!text) return
-
-    setUrl(
-      URL_CAT_IMG_PREFIX.replace('{firstWord}', text.split(' ', 3).join(' '))
-    )
-  }, [text])
+  async function handleRefresh() {
+    console.log(fact)
+    await refreshUrlAsync(fact)
+  }
 
   return (
     <main>
       <section>
         <h1>Cats</h1>
-        <p>{text}</p>
+        <button onClick={() => handleRefresh()}>Refresh</button>
+        <p>{fact}</p>
       </section>
-      <section>{url && <img src={url} alt="Cat's images from api" />}</section>
       <section>
-        <pre>{url}</pre>
+        {imgUrl && <img src={imgUrl} alt="Cat's images from api" />}
+      </section>
+      <section>
+        <pre>{imgUrl}</pre>
       </section>
     </main>
   )
