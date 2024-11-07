@@ -6,9 +6,8 @@ export function App() {
   const { fact, refreshUrlAsync } = useFactRefresh()
   const { imgUrl } = useCatImg({ fact })
 
-  async function handleRefresh() {
-    console.log(fact)
-    await refreshUrlAsync(fact)
+  function handleRefresh() {
+    refreshUrlAsync()
   }
 
   return (

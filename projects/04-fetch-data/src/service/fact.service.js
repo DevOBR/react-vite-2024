@@ -1,5 +1,6 @@
 const URL_FACT_PREFIX = 'https://catfact.ninja/fact'
 
 export async function getFactAsync() {
-  return await (await fetch(URL_FACT_PREFIX)).json()
+  const { fact } = await (await fetch(URL_FACT_PREFIX)).json()
+  return fact
 }

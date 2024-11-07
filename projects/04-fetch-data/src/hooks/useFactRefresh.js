@@ -5,9 +5,10 @@ export function useFactRefresh() {
   const [fact, setFact] = useState()
 
   async function refreshUrlAsync() {
-    const { fact } = await getFactAsync()
+    const fact = await getFactAsync()
     setFact(fact)
   }
+
   useEffect(() => {
     refreshUrlAsync()
   }, [])
