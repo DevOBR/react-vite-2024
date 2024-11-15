@@ -30,7 +30,7 @@ function NoMovies({ children }) {
 }
 
 export function Movies({ children, movies }) {
-  if (movies && movies?.response === 'True') {
+  if (movies && movies?.response) {
     return movies?.search?.length > 0
       ? DataMovies({ movies: movies.search })
       : NoMovies({ children })

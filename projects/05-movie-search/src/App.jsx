@@ -4,35 +4,51 @@ import { Movies } from './components/movie/movie.component'
 import { Error } from './components/movie/error.component'
 import { useSearch } from './hooks/useSearch'
 import { useMovies } from './hooks/useMovies'
-import { useEffect, useState } from 'react'
+import { useLstErrors } from './hooks/useLstErrors'
+import { useCallback, useState } from 'react'
+import debounce from 'just-debounce-it'
 
 export function App() {
-  const { search, setSearch, validateSearch, errorSearch } = useSearch()
-  const { movies } = useMovies({ search })
-  const [errors, setErrors] = useState([])
+  const { search, refreshSearch, errorSearch } = useSearch()
+  const [isSort, setIsSort] = useState(false)
+  const { movies, moviesError, refreshMoviesAsync, loading } = useMovies({
+    search,
+    errorSearch,
+    isSort
+  })
+  const { errors } = useLstErrors({
+    errorSearch,
+    reesponseError: movies?.Errors,
+    moviesError
+  })
 
-  useEffect(() => {
-    const lstErros = []
-    if (errorSearch) lstErros.push(errorSearch)
-    if (movies?.error) lstErros.push(movies?.error)
-    console.log({ errorSearch, movies })
-    setErrors(lstErros)
-  }, [errorSearch, movies])
+  const updateMovies = useCallback(
+    debounce(async ({ search }) => {
+      await refreshMoviesAsync({ search })
+    }, 500),
+    []
+  )
 
   function handlingOnType(e) {
-    const word = e.target.value
-    setSearch(word)
+    const value = e?.target?.value
+    if (value === ' ') return
+    refreshSearch({ search: value })
+    updateMovies({ search })
   }
-  function handlingOnSubmit(e) {
+  async function handlingOnSubmit(e) {
     e.preventDefault()
     const data = new window.FormData(e.target)
     const word = data.get('search')
-    validateSearch({ word })
+    await refreshMoviesAsync({ search: word })
   }
 
   function handlingClear(e) {
     e.preventDefault()
-    setSearch('')
+    refreshSearch({ search: '' })
+  }
+
+  function handlingSort() {
+    setIsSort(!isSort)
   }
 
   return (
@@ -46,6 +62,7 @@ export function App() {
             onChange={handlingOnType}
             placeholder='Avengers, Matrix etc...'
           />
+          <input type='checkbox' value={isSort} onChange={handlingSort} />
           <button>Search</button>
           <button type='submit' onClick={handlingClear}>
             Clear
@@ -54,6 +71,11 @@ export function App() {
       </section>
       <Error errors={errors} />
       <Movies movies={movies}>{!errors && 'Movie not found!'}</Movies>
+      {loading && (
+        <section>
+          <h3>Loading information...</h3>
+        </section>
+      )}
     </main>
   )
 }
