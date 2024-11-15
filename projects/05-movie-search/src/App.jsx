@@ -1,69 +1,37 @@
-import { useEffect, useState } from 'react'
-import withData from './mocks/withData'
+// import withData from './mocks/withData'
 import './App.css'
 import { Movies } from './components/movie/movie.component'
+import { Error } from './components/movie/error.component'
+import { useSearch } from './hooks/useSearch'
+import { useMovies } from './hooks/useMovies'
+import { useEffect, useState } from 'react'
+
 export function App() {
-  const [search, setSearch] = useState('')
-  const [movies, setMovies] = useState([])
-  const [error, setError] = useState('')
+  const { search, setSearch, validateSearch, errorSearch } = useSearch()
+  const { movies } = useMovies({ search })
+  const [errors, setErrors] = useState([])
 
   useEffect(() => {
-    if (!search) {
-      setError('You should enter a Movie Title')
-      return
-    }
+    const lstErros = []
+    if (errorSearch) lstErros.push(errorSearch)
+    if (movies?.error) lstErros.push(movies?.error)
+    console.log({ errorSearch, movies })
+    setErrors(lstErros)
+  }, [errorSearch, movies])
 
-    if (search?.length < 3) {
-      setError('You should enter more than 3 characters')
-      return
-    }
-
-    if (/\d/.test(search)) {
-      setError("Title shouldn't have any number in it")
-      return
-    }
-
-    function getMovies() {
-      const data = withData.Search.filter((movie) =>
-        movie.Title.toLowerCase().includes(search.toLocaleLowerCase())
-      )?.map((movie) => {
-        return {
-          id: movie.imdbID,
-          title: movie.Title,
-          year: movie.Year,
-          poster: movie.Poster
-        }
-      })
-
-      if (data?.length < 0) {
-        return { Response: 'False', Error: 'Movie not found!' }
-      }
-
-      return { Response: 'True', Search: data }
-    }
-
-    const result = getMovies()
-
-    if (result?.Response === 'False') setError(result.Error)
-
-    setMovies(result.Search)
-    setError('')
-  }, [search])
-
-  function handlingSearch(e) {
-    setSearch(e.target.value)
+  function handlingOnType(e) {
+    const word = e.target.value
+    setSearch(word)
   }
-
   function handlingOnSubmit(e) {
     e.preventDefault()
     const data = new window.FormData(e.target)
-    const fSearch = data.get('search')
-    setSearch(fSearch)
+    const word = data.get('search')
+    validateSearch({ word })
   }
 
   function handlingClear(e) {
     e.preventDefault()
-    setMovies([])
     setSearch('')
   }
 
@@ -74,8 +42,8 @@ export function App() {
           <input
             name='search'
             type='text'
-            value={search || ''}
-            onChange={handlingSearch}
+            value={search}
+            onChange={handlingOnType}
             placeholder='Avengers, Matrix etc...'
           />
           <button>Search</button>
@@ -84,14 +52,8 @@ export function App() {
           </button>
         </form>
       </section>
-
-      {error && (
-        <section>
-          <p>{error}</p>
-        </section>
-      )}
-
-      <Movies movies={movies}>No movies found</Movies>
+      <Error errors={errors} />
+      <Movies movies={movies}>{!errors && 'Movie not found!'}</Movies>
     </main>
   )
 }

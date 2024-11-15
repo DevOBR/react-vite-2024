@@ -22,11 +22,17 @@ function DataMovies({ movies }) {
 }
 
 function NoMovies({ children }) {
-  return <span>{children}</span>
+  return (
+    <section>
+      <p>{children}</p>
+    </section>
+  )
 }
 
 export function Movies({ children, movies }) {
-  if (movies) {
-    return movies?.length > 0 ? DataMovies({ movies }) : NoMovies({ children })
+  if (movies && movies?.response === 'True') {
+    return movies?.search?.length > 0
+      ? DataMovies({ movies: movies.search })
+      : NoMovies({ children })
   } else return NoMovies({ children })
 }
