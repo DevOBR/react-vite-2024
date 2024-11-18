@@ -1,7 +1,7 @@
 // import withData from './mocks/withData'
 import './App.css'
 import { Movies } from './components/movie/movie.component'
-import { Error } from './components/movie/error.component'
+import { Error } from './components/error/error.component'
 import { useSearch } from './hooks/useSearch'
 import { useMovies } from './hooks/useMovies'
 import { useLstErrors } from './hooks/useLstErrors'
@@ -33,7 +33,7 @@ export function App() {
     const value = e?.target?.value
     if (value === ' ') return
     refreshSearch({ search: value })
-    updateMovies({ search })
+    updateMovies({ search: value })
   }
   async function handlingOnSubmit(e) {
     e.preventDefault()

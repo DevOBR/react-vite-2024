@@ -1,3 +1,5 @@
+import './movie.component.css'
+
 function DataMovies({ movies }) {
   return (
     <>

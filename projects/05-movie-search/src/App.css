@@ -1601,42 +1601,7 @@ p {
   gap: 10px;
 }
 
-section > p {
-  color: red;
-  font-weight: bold;
-  font-size: 10pt;
-}
-
 section > form > input,
 button {
   margin: 0;
-}
-
-ul {
-  padding: 0px;
-  display: flex;
-  flex-direction: column;
-  list-style-type: none;
-  place-items: center;
-  justify-content: center;
-}
-
-.movie > li {
-  place-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 100%;
-}
-
-.movies {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-section ul > li:nth-of-type(1) {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 200px;
 }
